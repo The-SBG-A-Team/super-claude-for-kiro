@@ -277,13 +277,29 @@ async function configureMcpServers() {
     newServers = await fs.readJson(templatePath);
   }
 
-  // Merge MCP servers (existing takes precedence to preserve user customizations)
-  const mergedConfig = {
-    mcpServers: {
-      ...newServers.mcpServers,
-      ...existingConfig.mcpServers
-    }
-  };
+  // Deep merge MCP servers - add autoApprove from template while preserving user settings
+  const mergedServers = {};
+
+  // Start with all servers from both configs
+  const allServerNames = new Set([
+    ...Object.keys(newServers.mcpServers || {}),
+    ...Object.keys(existingConfig.mcpServers || {})
+  ]);
+
+  for (const serverName of allServerNames) {
+    const templateServer = newServers.mcpServers?.[serverName] || {};
+    const existingServer = existingConfig.mcpServers?.[serverName] || {};
+
+    // Deep merge: existing settings win, but add autoApprove from template if missing
+    mergedServers[serverName] = {
+      ...templateServer,
+      ...existingServer,
+      // Always use template's autoApprove (the whole point of this update)
+      ...(templateServer.autoApprove ? { autoApprove: templateServer.autoApprove } : {})
+    };
+  }
+
+  const mergedConfig = { mcpServers: mergedServers };
 
   await fs.ensureDir(path.join(KIRO_DIR, 'settings'));
   await fs.writeJson(mcpPath, mergedConfig, { spaces: 2 });
