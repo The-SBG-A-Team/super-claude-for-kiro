@@ -134,7 +134,8 @@ export async function updateSuperClaude() {
       process.exit(1);
     }
 
-    spinner.text = 'Updating SuperClaude...';
+    // Stop this spinner before installSuperClaude starts its own
+    spinner.stop();
 
     // Perform fresh install with force
     await installSuperClaude({ force: true, mcp: true, default: true });
