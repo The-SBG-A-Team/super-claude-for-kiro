@@ -89,7 +89,6 @@ npx superclaude-kiro uninstall
 All agents are configured with:
 - `"tools": ["*"]` - Access to all tools
 - `"allowedTools": ["*"]` - All tools pre-approved (no prompts)
-- `"allowedMcpTools": ["*"]` - All MCP tools trusted (no prompts)
 - `"model": "claude-sonnet-4.5"` - Claude Sonnet 4.5
 - `"useLegacyMcpJson": true` - Uses global MCP servers
 

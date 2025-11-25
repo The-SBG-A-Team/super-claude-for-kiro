@@ -10,9 +10,6 @@
   "allowedTools": [
     "*"
   ],
-  "allowedMcpTools": [
-    "*"
-  ],
   "resources": [],
   "hooks": {},
   "toolsSettings": {},
