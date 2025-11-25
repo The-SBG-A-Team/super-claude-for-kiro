@@ -1,0 +1,52 @@
+{
+  "name": "superclaude-kiro",
+  "version": "1.0.0",
+  "description": "SuperClaude Framework for Kiro CLI - Easy installation for teams",
+  "type": "module",
+  "bin": {
+    "superclaude-kiro": "./bin/superclaude-kiro.js"
+  },
+  "main": "src/cli.js",
+  "scripts": {
+    "build": "node scripts/build.js",
+    "sync:claude": "node scripts/sync-from-claude.js",
+    "sync:github": "node scripts/sync-from-github.js",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "superclaude",
+    "kiro",
+    "claude",
+    "ai",
+    "cli",
+    "development",
+    "productivity"
+  ],
+  "author": "Richardmbs12 <richardmbs3@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/The-SBG-A-Team/super-claude-for-kiro.git"
+  },
+  "homepage": "https://github.com/The-SBG-A-Team/super-claude-for-kiro#readme",
+  "bugs": {
+    "url": "https://github.com/The-SBG-A-Team/super-claude-for-kiro/issues"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "dependencies": {
+    "commander": "^12.1.0",
+    "chalk": "^5.3.0",
+    "fs-extra": "^11.2.0",
+    "ora": "^8.1.0"
+  },
+  "files": [
+    "bin/",
+    "src/",
+    "dist/",
+    "templates/",
+    "README.md",
+    "LICENSE"
+  ]
+}
