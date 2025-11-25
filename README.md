@@ -88,9 +88,12 @@ npx superclaude-kiro uninstall
 
 All agents are configured with:
 - `"tools": ["*"]` - Access to all tools
-- `"allowedTools": ["*"]` - All tools pre-approved (no prompts)
+- `"allowedTools": ["*", "@context7", "@morphllm-fast-apply", "@playwright", "@sequential-thinking", "@serena"]` - All built-in and MCP tools pre-approved
+- `"toolsSettings"` - Shell and write operations auto-allowed
 - `"model": "claude-sonnet-4.5"` - Claude Sonnet 4.5
 - `"useLegacyMcpJson": true` - Uses global MCP servers
+
+MCP servers are configured with `autoApprove` arrays for all tools, so you won't be prompted for permission.
 
 ## Behavioral Modes
 

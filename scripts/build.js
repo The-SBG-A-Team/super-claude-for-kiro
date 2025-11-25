@@ -146,10 +146,20 @@ The user can reference any SuperClaude command using #sc-[command] syntax. When 
 You have access to sequential-thinking, context7, playwright, serena, and morphllm-fast-apply MCP servers for enhanced capabilities.`,
     "mcpServers": {},
     "tools": ["*"],
-    "allowedTools": ["*"],
+    "allowedTools": [
+      "*",
+      "@context7",
+      "@morphllm-fast-apply",
+      "@playwright",
+      "@sequential-thinking",
+      "@serena"
+    ],
     "resources": [],
     "hooks": {},
-    "toolsSettings": {},
+    "toolsSettings": {
+      "shell": { "autoAllow": true },
+      "write": { "autoAllow": true }
+    },
     "useLegacyMcpJson": true,
     "model": "claude-sonnet-4.5"
   };
@@ -174,10 +184,20 @@ For implementation delegation, use #sc-implement.
 For analysis, use #sc-analyze.`,
     "mcpServers": {},
     "tools": ["*"],
-    "allowedTools": ["*"],
+    "allowedTools": [
+      "*",
+      "@context7",
+      "@morphllm-fast-apply",
+      "@playwright",
+      "@sequential-thinking",
+      "@serena"
+    ],
     "resources": [],
     "hooks": {},
-    "toolsSettings": {},
+    "toolsSettings": {
+      "shell": { "autoAllow": true },
+      "write": { "autoAllow": true }
+    },
     "useLegacyMcpJson": true,
     "model": "claude-sonnet-4.5"
   };
@@ -201,10 +221,20 @@ For design decisions, use #sc-design.
 For testing, use #sc-test.`,
     "mcpServers": {},
     "tools": ["*"],
-    "allowedTools": ["*"],
+    "allowedTools": [
+      "*",
+      "@context7",
+      "@morphllm-fast-apply",
+      "@playwright",
+      "@sequential-thinking",
+      "@serena"
+    ],
     "resources": [],
     "hooks": {},
-    "toolsSettings": {},
+    "toolsSettings": {
+      "shell": { "autoAllow": true },
+      "write": { "autoAllow": true }
+    },
     "useLegacyMcpJson": true,
     "model": "claude-sonnet-4.5"
   };
@@ -228,10 +258,20 @@ For improvements, use #sc-improve.
 For troubleshooting, use #sc-troubleshoot.`,
     "mcpServers": {},
     "tools": ["*"],
-    "allowedTools": ["*"],
+    "allowedTools": [
+      "*",
+      "@context7",
+      "@morphllm-fast-apply",
+      "@playwright",
+      "@sequential-thinking",
+      "@serena"
+    ],
     "resources": [],
     "hooks": {},
-    "toolsSettings": {},
+    "toolsSettings": {
+      "shell": { "autoAllow": true },
+      "write": { "autoAllow": true }
+    },
     "useLegacyMcpJson": true,
     "model": "claude-sonnet-4.5"
   };
@@ -295,6 +335,15 @@ async function generateMcpTemplate() {
           "check_onboarding_performed", "onboarding", "think_about_collected_information",
           "think_about_task_adherence", "think_about_whether_you_are_done", "initial_instructions"
         ]
+      },
+      "morphllm-fast-apply": {
+        "type": "stdio",
+        "command": "npx",
+        "args": ["-y", "@morph-llm/morph-fast-apply"],
+        "env": {
+          "MORPH_API_KEY": "YOUR_MORPH_API_KEY"
+        },
+        "autoApprove": ["edit_file"]
       }
     }
   };

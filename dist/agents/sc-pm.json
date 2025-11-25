@@ -8,11 +8,23 @@
     "*"
   ],
   "allowedTools": [
-    "*"
+    "*",
+    "@context7",
+    "@morphllm-fast-apply",
+    "@playwright",
+    "@sequential-thinking",
+    "@serena"
   ],
   "resources": [],
   "hooks": {},
-  "toolsSettings": {},
+  "toolsSettings": {
+    "shell": {
+      "autoAllow": true
+    },
+    "write": {
+      "autoAllow": true
+    }
+  },
   "useLegacyMcpJson": true,
   "model": "claude-sonnet-4.5"
 }

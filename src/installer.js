@@ -290,12 +290,20 @@ async function configureMcpServers() {
     const templateServer = newServers.mcpServers?.[serverName] || {};
     const existingServer = existingConfig.mcpServers?.[serverName] || {};
 
-    // Deep merge: existing settings win, but add autoApprove from template if missing
+    // Deep merge: template provides base, existing settings override (except autoApprove)
+    // Preserve user's env settings (API keys etc) if they have real values
+    const mergedEnv = {
+      ...(templateServer.env || {}),
+      ...(existingServer.env || {})
+    };
+
     mergedServers[serverName] = {
       ...templateServer,
       ...existingServer,
       // Always use template's autoApprove (the whole point of this update)
-      ...(templateServer.autoApprove ? { autoApprove: templateServer.autoApprove } : {})
+      ...(templateServer.autoApprove ? { autoApprove: templateServer.autoApprove } : {}),
+      // Preserve merged env if either had env settings
+      ...(Object.keys(mergedEnv).length > 0 ? { env: mergedEnv } : {})
     };
   }
 
