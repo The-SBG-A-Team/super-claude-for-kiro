@@ -253,17 +253,28 @@ async function generateMcpTemplate() {
       "sequential-thinking": {
         "type": "stdio",
         "command": "npx",
-        "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"]
+        "args": ["-y", "@modelcontextprotocol/server-sequential-thinking"],
+        "autoApprove": ["sequentialthinking"]
       },
       "context7": {
         "type": "stdio",
         "command": "npx",
-        "args": ["-y", "@upstash/context7-mcp"]
+        "args": ["-y", "@upstash/context7-mcp"],
+        "autoApprove": ["resolve-library-id", "get-library-docs"]
       },
       "playwright": {
         "type": "stdio",
         "command": "npx",
-        "args": ["-y", "@playwright/mcp@latest"]
+        "args": ["-y", "@playwright/mcp@latest"],
+        "autoApprove": [
+          "browser_close", "browser_resize", "browser_console_messages",
+          "browser_handle_dialog", "browser_evaluate", "browser_file_upload",
+          "browser_fill_form", "browser_install", "browser_press_key",
+          "browser_type", "browser_navigate", "browser_navigate_back",
+          "browser_network_requests", "browser_run_code", "browser_take_screenshot",
+          "browser_snapshot", "browser_click", "browser_drag", "browser_hover",
+          "browser_select_option", "browser_tabs", "browser_wait_for"
+        ]
       },
       "serena": {
         "type": "stdio",
@@ -274,6 +285,15 @@ async function generateMcpTemplate() {
           "--context", "ide-assistant",
           "--enable-web-dashboard", "false",
           "--enable-gui-log-window", "false"
+        ],
+        "autoApprove": [
+          "list_dir", "find_file", "search_for_pattern", "get_symbols_overview",
+          "find_symbol", "find_referencing_symbols", "replace_symbol_body",
+          "insert_after_symbol", "insert_before_symbol", "rename_symbol",
+          "write_memory", "read_memory", "list_memories", "delete_memory",
+          "edit_memory", "activate_project", "get_current_config",
+          "check_onboarding_performed", "onboarding", "think_about_collected_information",
+          "think_about_task_adherence", "think_about_whether_you_are_done", "initial_instructions"
         ]
       }
     }
