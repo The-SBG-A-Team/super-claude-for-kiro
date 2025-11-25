@@ -1,6 +1,8 @@
 # SuperClaude for Kiro CLI
 
-Easy installation of SuperClaude Framework for Kiro CLI. One command to install, update, or uninstall.
+Easy installation of [SuperClaude Framework](https://superclaude.netlify.app/) for Kiro CLI. One command to install, update, or uninstall.
+
+> **Attribution**: This package is an installer for the SuperClaude Framework created by [SuperClaude-Org](https://github.com/SuperClaude-Org/SuperClaude_Framework). All command content and framework design belongs to the original authors. This package simply provides a convenient installation mechanism for Kiro CLI users.
 
 ## Installation
 
@@ -87,6 +89,7 @@ npx superclaude-kiro uninstall
 All agents are configured with:
 - `"tools": ["*"]` - Access to all tools
 - `"allowedTools": ["*"]` - All tools pre-approved (no prompts)
+- `"allowedMcpTools": ["*"]` - All MCP tools trusted (no prompts)
 - `"model": "claude-sonnet-4.5"` - Claude Sonnet 4.5
 - `"useLegacyMcpJson": true` - Uses global MCP servers
 
@@ -185,6 +188,14 @@ npx superclaude-kiro uninstall
 npx superclaude-kiro install --force
 ```
 
+## Credits & References
+
+- **SuperClaude Framework**: https://superclaude.netlify.app/
+- **SuperClaude GitHub**: https://github.com/SuperClaude-Org/SuperClaude_Framework
+- **Kiro CLI Documentation**: https://kiro.dev/docs/cli/
+
+This installer package was created to simplify SuperClaude deployment for Kiro CLI users. All credit for the SuperClaude framework, commands, and methodology goes to the original creators.
+
 ## License
 
-MIT
+MIT (installer only - SuperClaude Framework has its own license, see [original repository](https://github.com/SuperClaude-Org/SuperClaude_Framework))
