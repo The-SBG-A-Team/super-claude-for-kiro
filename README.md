@@ -156,10 +156,41 @@ npm version patch
 npm publish
 ```
 
+## MCP Server Setup
+
+SuperClaude includes 5 pre-configured MCP servers. Most work out of the box, but **MorphLLM** requires an API key.
+
+### MorphLLM Fast Apply (Optional but Recommended)
+
+The `morphllm-fast-apply` MCP server provides ultra-fast file editing (10,500+ tokens/sec). To enable it:
+
+1. **Create a free account** at [morphllm.com](https://www.morphllm.com)
+2. **Get your API key** from [dashboard/api-keys](https://www.morphllm.com/dashboard/api-keys)
+3. **Set the environment variable** (add to your shell profile):
+
+```bash
+# Add to ~/.zshrc or ~/.bashrc
+export MORPH_API_KEY="your-api-key-here"
+```
+
+4. **Restart your terminal** or run `source ~/.zshrc`
+
+**Pricing**: Free tier includes 500 requests/month. Paid usage is ~$1/million tokens.
+
+### Other MCP Servers (No Setup Required)
+
+| Server | Purpose |
+|--------|---------|
+| `sequential-thinking` | Structured reasoning and problem-solving |
+| `context7` | Library documentation lookup |
+| `playwright` | Browser automation and testing |
+| `serena` | Semantic code analysis and editing |
+
 ## Requirements
 
 - Node.js 18+
 - Kiro CLI installed (`~/.kiro` directory exists)
+- (Optional) MorphLLM API key for fast file editing
 
 ## Troubleshooting
 
@@ -182,6 +213,19 @@ kiro-cli mcp list
 # Check config
 cat ~/.kiro/settings/mcp.json
 ```
+
+### MorphLLM not working
+
+```bash
+# Check if API key is set
+echo $MORPH_API_KEY
+
+# If empty, add to your shell profile
+echo 'export MORPH_API_KEY="your-key-here"' >> ~/.zshrc
+source ~/.zshrc
+```
+
+Get your API key from [morphllm.com/dashboard/api-keys](https://www.morphllm.com/dashboard/api-keys)
 
 ### Reinstall from scratch
 

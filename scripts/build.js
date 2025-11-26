@@ -341,7 +341,7 @@ async function generateMcpTemplate() {
         "command": "npx",
         "args": ["-y", "@morph-llm/morph-fast-apply"],
         "env": {
-          "MORPH_API_KEY": "YOUR_MORPH_API_KEY"
+          "MORPH_API_KEY": "${MORPH_API_KEY}"
         },
         "autoApprove": ["edit_file"]
       }

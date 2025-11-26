@@ -1,6 +1,6 @@
 {
   "name": "superclaude-kiro",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "SuperClaude Framework for Kiro CLI - Easy installation for teams",
   "type": "module",
   "bin": {
