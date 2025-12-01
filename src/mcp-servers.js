@@ -101,7 +101,7 @@ export const MCP_SERVERS = {
     ],
     config: {
       command: 'npx',
-      args: ['-y', '@morph-llm/morph-fast-apply'],
+      args: ['-y', '@morphllm/morphmcp'],
       autoApprove: ['edit_file']
     }
   }
