@@ -10,7 +10,13 @@ Easy installation of [SuperClaude Framework](https://superclaude.netlify.app/) f
 npx superclaude-kiro install
 ```
 
-That's it! SuperClaude is now installed and set as your default agent.
+The installer will guide you through selecting which MCP servers to install. By default, 4 core servers are pre-selected and ready to use immediately.
+
+**Want MorphLLM Fast Apply?** Select it during installation or add it later:
+
+```bash
+npx superclaude-kiro install --with-morph
+```
 
 ## Usage
 
@@ -55,16 +61,25 @@ Reference SuperClaude commands using `#sc-*` syntax:
 ## CLI Commands
 
 ```bash
-# Install SuperClaude
+# Install SuperClaude (interactive MCP server selection)
 npx superclaude-kiro install
 
 # Install with options
-npx superclaude-kiro install --force        # Overwrite existing
-npx superclaude-kiro install --no-mcp       # Skip MCP server config
-npx superclaude-kiro install --no-default   # Don't set as default agent
+npx superclaude-kiro install --force           # Overwrite existing
+npx superclaude-kiro install --minimal         # Core servers only, no prompts
+npx superclaude-kiro install --with-morph      # Include MorphLLM (prompts for API key)
+npx superclaude-kiro install --no-interactive  # Skip prompts, use defaults
+npx superclaude-kiro install --no-mcp          # Skip MCP server config entirely
+npx superclaude-kiro install --no-default      # Don't set as default agent
 
-# Update to latest version
+# Install with MorphLLM API key (for CI/CD)
+npx superclaude-kiro install --morph-api-key "your-api-key"
+
+# Update to latest version (preserves your MCP server selections)
 npx superclaude-kiro update
+
+# Add MorphLLM during update
+npx superclaude-kiro update --with-morph
 
 # Check installation status
 npx superclaude-kiro status
@@ -81,14 +96,49 @@ npx superclaude-kiro uninstall
   - `sc-pm` - Project Manager agent
   - `sc-implement` - Implementation agent
   - `sc-analyze` - Analysis agent
-- **MCP servers** - Pre-configured in `~/.kiro/settings/mcp.json`
+- **MCP servers** - Your selected servers in `~/.kiro/settings/mcp.json`
 - **Default agent** - Set to `superclaude` in `~/.kiro/settings/cli.json`
+
+## MCP Server Selection
+
+During installation, you can choose which MCP servers to install:
+
+| Server | Description | Default |
+|--------|-------------|---------|
+| `sequential-thinking` | Structured reasoning and problem-solving | Yes |
+| `context7` | Library documentation lookup | Yes |
+| `playwright` | Browser automation and testing | Yes |
+| `serena` | Semantic code analysis and editing | Yes |
+| `morphllm-fast-apply` | Ultra-fast file editing (requires API key) | No |
+
+### MorphLLM Fast Apply
+
+MorphLLM provides ultra-fast file editing at 10,500+ tokens/sec.
+
+**To install with MorphLLM:**
+
+```bash
+npx superclaude-kiro install --with-morph
+```
+
+The installer will guide you through:
+1. Creating a free account at [morphllm.com](https://www.morphllm.com)
+2. Getting your API key from [dashboard/api-keys](https://morphllm.com/dashboard/api-keys)
+3. Entering your API key securely
+
+**For CI/CD (non-interactive):**
+
+```bash
+npx superclaude-kiro install --morph-api-key "your-api-key"
+```
+
+**Pricing**: Free tier includes 500 requests/month. Paid usage is ~$1/million tokens.
 
 ## Configuration
 
 All agents are configured with:
 - `"tools": ["*"]` - Access to all tools
-- `"allowedTools": ["*", "@context7", "@morphllm-fast-apply", "@playwright", "@sequential-thinking", "@serena"]` - All built-in and MCP tools pre-approved
+- `"allowedTools": ["*", "@context7", "@playwright", "@sequential-thinking", "@serena"]` - All built-in and MCP tools pre-approved
 - `"toolsSettings"` - Shell and write operations auto-allowed
 - `"model": "claude-sonnet-4.5"` - Claude Sonnet 4.5
 - `"useLegacyMcpJson": true` - Uses global MCP servers
@@ -156,41 +206,10 @@ npm version patch
 npm publish
 ```
 
-## MCP Server Setup
-
-SuperClaude includes 5 pre-configured MCP servers. Most work out of the box, but **MorphLLM** requires an API key.
-
-### MorphLLM Fast Apply (Optional but Recommended)
-
-The `morphllm-fast-apply` MCP server provides ultra-fast file editing (10,500+ tokens/sec). To enable it:
-
-1. **Create a free account** at [morphllm.com](https://www.morphllm.com)
-2. **Get your API key** from [dashboard/api-keys](https://www.morphllm.com/dashboard/api-keys)
-3. **Set the environment variable** (add to your shell profile):
-
-```bash
-# Add to ~/.zshrc or ~/.bashrc
-export MORPH_API_KEY="your-api-key-here"
-```
-
-4. **Restart your terminal** or run `source ~/.zshrc`
-
-**Pricing**: Free tier includes 500 requests/month. Paid usage is ~$1/million tokens.
-
-### Other MCP Servers (No Setup Required)
-
-| Server | Purpose |
-|--------|---------|
-| `sequential-thinking` | Structured reasoning and problem-solving |
-| `context7` | Library documentation lookup |
-| `playwright` | Browser automation and testing |
-| `serena` | Semantic code analysis and editing |
-
 ## Requirements
 
 - Node.js 18+
 - Kiro CLI installed (`~/.kiro` directory exists)
-- (Optional) MorphLLM API key for fast file editing
 
 ## Troubleshooting
 
@@ -212,20 +231,28 @@ kiro-cli mcp list
 
 # Check config
 cat ~/.kiro/settings/mcp.json
+
+# Check status
+npx superclaude-kiro status
 ```
 
 ### MorphLLM not working
 
-```bash
-# Check if API key is set
-echo $MORPH_API_KEY
+Run the installer with `--with-morph` to set up MorphLLM:
 
-# If empty, add to your shell profile
-echo 'export MORPH_API_KEY="your-key-here"' >> ~/.zshrc
-source ~/.zshrc
+```bash
+npx superclaude-kiro install --force --with-morph
 ```
 
-Get your API key from [morphllm.com/dashboard/api-keys](https://www.morphllm.com/dashboard/api-keys)
+Or check your current status:
+
+```bash
+npx superclaude-kiro status
+```
+
+**Common issues:**
+- API key must be provided during installation (environment variable expansion doesn't work reliably in Kiro CLI)
+- Get your API key from [morphllm.com/dashboard/api-keys](https://www.morphllm.com/dashboard/api-keys)
 
 ### Reinstall from scratch
 

@@ -5,6 +5,19 @@ import chalk from 'chalk';
 import ora from 'ora';
 import { fileURLToPath } from 'url';
 import { createRequire } from 'module';
+import {
+  MCP_SERVERS,
+  CORE_SERVERS,
+  MANAGED_SERVERS,
+  buildServerConfig
+} from './mcp-servers.js';
+import {
+  isInteractive,
+  selectMcpServers,
+  promptMorphLLMSetup,
+  promptMorphApiKeyQuick,
+  confirmInstallation
+} from './prompts.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -15,51 +28,107 @@ const KIRO_DIR = path.join(os.homedir(), '.kiro');
 const DIST_DIR = path.join(__dirname, '..', 'dist');
 
 export async function installSuperClaude(options = {}) {
-  const spinner = ora('Installing SuperClaude for Kiro...').start();
-
   try {
-    // 1. Verify Kiro CLI directory exists
+    // 1. Verify Kiro CLI directory exists (before any prompts)
     if (!await fs.pathExists(KIRO_DIR)) {
-      spinner.fail(chalk.red('Kiro CLI not found.'));
-      console.log(chalk.yellow('\nPlease install Kiro CLI first:'));
-      console.log(chalk.cyan('  npm install -g @anthropic-ai/kiro-cli'));
-      console.log(chalk.yellow('  or visit: https://kiro.dev/docs/cli/'));
+      console.log(chalk.red('\n  Kiro CLI not found.'));
+      console.log(chalk.yellow('\n  Please install Kiro CLI first:'));
+      console.log(chalk.cyan('    npm install -g @anthropic-ai/kiro-cli'));
+      console.log(chalk.yellow('    or visit: https://kiro.dev/docs/cli/'));
       process.exit(1);
     }
 
-    // 2. Check for existing installation
+    // 2. Check for existing installation (before any prompts)
     const steeringDir = path.join(KIRO_DIR, 'steering', 'superclaude');
     if (await fs.pathExists(steeringDir) && !options.force) {
-      spinner.fail(chalk.red('SuperClaude already installed.'));
-      console.log(chalk.yellow('\nTo overwrite, run:'));
-      console.log(chalk.cyan('  npx superclaude-kiro install --force'));
+      console.log(chalk.red('\n  SuperClaude already installed.'));
+      console.log(chalk.yellow('\n  To overwrite, run:'));
+      console.log(chalk.cyan('    npx superclaude-kiro install --force'));
       process.exit(1);
     }
 
     // 3. Verify dist directory exists
     if (!await fs.pathExists(DIST_DIR)) {
-      spinner.fail(chalk.red('Distribution files not found.'));
-      console.log(chalk.yellow('\nPackage may be corrupted. Try reinstalling:'));
-      console.log(chalk.cyan('  npm cache clean --force'));
-      console.log(chalk.cyan('  npx superclaude-kiro@latest install'));
+      console.log(chalk.red('\n  Distribution files not found.'));
+      console.log(chalk.yellow('\n  Package may be corrupted. Try reinstalling:'));
+      console.log(chalk.cyan('    npm cache clean --force'));
+      console.log(chalk.cyan('    npx superclaude-kiro@latest install'));
       process.exit(1);
     }
 
-    // 4. Create directories
+    // 4. Determine MCP server selection and API keys
+    let selectedServers = options.servers || null;
+    let apiKeys = options.apiKeys || {};
+
+    // Handle MCP configuration based on options
+    if (options.mcp !== false) {
+      // If --minimal flag, use only core servers
+      if (options.minimal) {
+        selectedServers = CORE_SERVERS;
+      }
+      // If --morph-api-key provided via CLI
+      else if (options.morphApiKey) {
+        selectedServers = [...CORE_SERVERS, 'morphllm-fast-apply'];
+        apiKeys['morphllm-fast-apply'] = options.morphApiKey;
+      }
+      // If --with-morph flag, prompt for API key
+      else if (options.withMorph) {
+        selectedServers = [...CORE_SERVERS, 'morphllm-fast-apply'];
+        if (isInteractive()) {
+          const morphKey = await promptMorphApiKeyQuick();
+          if (morphKey) {
+            apiKeys['morphllm-fast-apply'] = morphKey;
+          } else {
+            // User didn't provide key, remove morphllm from selection
+            selectedServers = CORE_SERVERS;
+            console.log(chalk.gray('\n  Skipping MorphLLM (no API key provided).\n'));
+          }
+        } else {
+          console.log(chalk.yellow('\n  Warning: --with-morph requires interactive mode or --morph-api-key'));
+          selectedServers = CORE_SERVERS;
+        }
+      }
+      // If interactive and no specific flags, show selection UI
+      else if (options.interactive !== false && isInteractive()) {
+        selectedServers = await selectMcpServers();
+
+        // If morphllm was selected, prompt for API key
+        if (selectedServers.includes('morphllm-fast-apply')) {
+          const morphKey = await promptMorphLLMSetup();
+          if (morphKey) {
+            apiKeys['morphllm-fast-apply'] = morphKey;
+          } else {
+            // User didn't provide key, remove morphllm from selection
+            selectedServers = selectedServers.filter(s => s !== 'morphllm-fast-apply');
+          }
+        }
+
+        await confirmInstallation(selectedServers, !!apiKeys['morphllm-fast-apply']);
+      }
+      // Non-interactive default: core servers only
+      else {
+        selectedServers = CORE_SERVERS;
+      }
+    }
+
+    // Start the spinner after all prompts are done
+    const spinner = ora('Installing SuperClaude for Kiro...').start();
+
+    // 5. Create directories
     spinner.text = 'Creating directories...';
     await fs.ensureDir(path.join(KIRO_DIR, 'steering', 'superclaude'));
     await fs.ensureDir(path.join(KIRO_DIR, 'agents'));
     await fs.ensureDir(path.join(KIRO_DIR, 'settings'));
     await fs.ensureDir(path.join(KIRO_DIR, 'docs'));
 
-    // 5. Copy steering files
+    // 6. Copy steering files
     spinner.text = 'Installing steering files...';
     const steeringSrc = path.join(DIST_DIR, 'steering', 'superclaude');
     if (await fs.pathExists(steeringSrc)) {
       await fs.copy(steeringSrc, path.join(KIRO_DIR, 'steering', 'superclaude'));
     }
 
-    // 6. Copy agents
+    // 7. Copy agents
     spinner.text = 'Installing agents...';
     const agentsSrc = path.join(DIST_DIR, 'agents');
     if (await fs.pathExists(agentsSrc)) {
@@ -74,19 +143,19 @@ export async function installSuperClaude(options = {}) {
       }
     }
 
-    // 7. Configure MCP servers (optional)
-    if (options.mcp !== false) {
+    // 8. Configure MCP servers (with selected servers)
+    if (options.mcp !== false && selectedServers) {
       spinner.text = 'Configuring MCP servers...';
-      await configureMcpServers();
+      await configureMcpServers(selectedServers, apiKeys);
     }
 
-    // 8. Set default agent (optional)
+    // 9. Set default agent (optional)
     if (options.default !== false) {
       spinner.text = 'Setting default agent...';
       await setDefaultAgent();
     }
 
-    // 9. Create version file
+    // 10. Create version file
     spinner.text = 'Finalizing installation...';
     const pkg = require('../package.json');
     await fs.writeJson(
@@ -94,7 +163,8 @@ export async function installSuperClaude(options = {}) {
       {
         version: pkg.version,
         installedAt: new Date().toISOString(),
-        source: 'npm:superclaude-kiro'
+        source: 'npm:superclaude-kiro',
+        mcpServers: selectedServers || []
       },
       { spaces: 2 }
     );
@@ -109,6 +179,9 @@ export async function installSuperClaude(options = {}) {
     console.log(chalk.gray('  Installed:'));
     console.log(chalk.gray(`    - ${steeringFiles} steering files`));
     console.log(chalk.gray(`    - ${agentFiles + 1} agents`));
+    if (selectedServers) {
+      console.log(chalk.gray(`    - ${selectedServers.length} MCP servers`));
+    }
     console.log('');
     console.log(chalk.cyan('Quick Start:'));
     console.log('  1. Run: ' + chalk.yellow('kiro-cli chat'));
@@ -116,12 +189,12 @@ export async function installSuperClaude(options = {}) {
     console.log('');
 
   } catch (error) {
-    spinner.fail(chalk.red('Installation failed: ' + error.message));
+    console.log(chalk.red('\n  Installation failed: ' + error.message));
     process.exit(1);
   }
 }
 
-export async function updateSuperClaude() {
+export async function updateSuperClaude(options = {}) {
   const spinner = ora('Checking for updates...').start();
 
   try {
@@ -134,11 +207,22 @@ export async function updateSuperClaude() {
       process.exit(1);
     }
 
+    // Read existing version info to preserve MCP server selections
+    const versionInfo = await fs.readJson(versionFile);
+    const existingServers = versionInfo.mcpServers || CORE_SERVERS;
+
     // Stop this spinner before installSuperClaude starts its own
     spinner.stop();
 
-    // Perform fresh install with force
-    await installSuperClaude({ force: true, mcp: true, default: true });
+    // Perform fresh install with force, preserving server selection
+    await installSuperClaude({
+      force: true,
+      mcp: true,
+      default: true,
+      servers: existingServers,
+      interactive: false, // Don't re-prompt during update
+      ...options
+    });
 
   } catch (error) {
     spinner.fail(chalk.red('Update failed: ' + error.message));
@@ -238,12 +322,34 @@ export async function getStatus() {
   console.log(chalk.green(`    ✔ Steering files (${steeringFiles})`));
   console.log(chalk.green(`    ✔ Agents (${agentFiles + 1})`));
 
-  // Check MCP
+  // Check MCP servers
   const mcpPath = path.join(KIRO_DIR, 'settings', 'mcp.json');
   if (await fs.pathExists(mcpPath)) {
     const mcpConfig = await fs.readJson(mcpPath);
     const mcpCount = Object.keys(mcpConfig.mcpServers || {}).length;
+    const installedServers = versionInfo.mcpServers || [];
+
     console.log(chalk.green(`    ✔ MCP servers (${mcpCount})`));
+
+    // Show which servers are installed
+    if (installedServers.length > 0) {
+      console.log(chalk.gray('      Installed:'));
+      for (const serverName of installedServers) {
+        const server = MCP_SERVERS[serverName];
+        const displayName = server?.displayName || serverName;
+        console.log(chalk.gray(`        - ${displayName}`));
+      }
+    }
+
+    // Check if morphllm is configured
+    if (mcpConfig.mcpServers?.['morphllm-fast-apply']) {
+      const hasApiKey = mcpConfig.mcpServers['morphllm-fast-apply']?.env?.MORPH_API_KEY;
+      if (hasApiKey && !hasApiKey.startsWith('${')) {
+        console.log(chalk.green('    ✔ MorphLLM API key configured'));
+      } else {
+        console.log(chalk.yellow('    ○ MorphLLM needs API key'));
+      }
+    }
   } else {
     console.log(chalk.yellow('    ○ MCP servers (not configured)'));
   }
@@ -264,48 +370,61 @@ export async function getStatus() {
 
 // Helper functions
 
-async function configureMcpServers() {
+async function configureMcpServers(selectedServers, apiKeys = {}) {
   const mcpPath = path.join(KIRO_DIR, 'settings', 'mcp.json');
-  const templatePath = path.join(DIST_DIR, 'mcp', 'mcp-servers.json');
 
+  // Read existing config to preserve user's custom servers
   let existingConfig = { mcpServers: {} };
   if (await fs.pathExists(mcpPath)) {
     existingConfig = await fs.readJson(mcpPath);
   }
 
-  let newServers = { mcpServers: {} };
-  if (await fs.pathExists(templatePath)) {
-    newServers = await fs.readJson(templatePath);
+  // Build new config from selected servers
+  const newServers = {};
+  for (const serverName of selectedServers) {
+    const apiKey = apiKeys[serverName] || null;
+    const config = buildServerConfig(serverName, apiKey);
+    if (config) {
+      newServers[serverName] = config;
+    }
   }
 
-  // Deep merge MCP servers - add autoApprove from template while preserving user settings
+  // Merge: preserve user's custom servers, update managed servers
   const mergedServers = {};
 
-  // Start with all servers from both configs
-  const allServerNames = new Set([
-    ...Object.keys(newServers.mcpServers || {}),
-    ...Object.keys(existingConfig.mcpServers || {})
-  ]);
+  // First, add all user's non-managed servers
+  for (const [name, config] of Object.entries(existingConfig.mcpServers || {})) {
+    if (!MANAGED_SERVERS.includes(name)) {
+      mergedServers[name] = config;
+    }
+  }
 
-  for (const serverName of allServerNames) {
-    const templateServer = newServers.mcpServers?.[serverName] || {};
-    const existingServer = existingConfig.mcpServers?.[serverName] || {};
+  // Then add/update selected managed servers
+  for (const [name, config] of Object.entries(newServers)) {
+    const existingServer = existingConfig.mcpServers?.[name];
 
-    // Deep merge: template provides base, existing settings override (except autoApprove)
-    // Preserve user's env settings (API keys etc) if they have real values
-    const mergedEnv = {
-      ...(templateServer.env || {}),
-      ...(existingServer.env || {})
-    };
+    if (existingServer) {
+      // Preserve user's env settings (especially API keys) if they exist
+      const mergedEnv = {
+        ...(config.env || {}),
+        ...(existingServer.env || {})
+      };
 
-    mergedServers[serverName] = {
-      ...templateServer,
-      ...existingServer,
-      // Always use template's autoApprove (the whole point of this update)
-      ...(templateServer.autoApprove ? { autoApprove: templateServer.autoApprove } : {}),
-      // Preserve merged env if either had env settings
-      ...(Object.keys(mergedEnv).length > 0 ? { env: mergedEnv } : {})
-    };
+      // But if we have a new API key from this install, use it
+      if (apiKeys[name]) {
+        const server = MCP_SERVERS[name];
+        if (server?.apiKeyEnvVar) {
+          mergedEnv[server.apiKeyEnvVar] = apiKeys[name];
+        }
+      }
+
+      mergedServers[name] = {
+        ...config,
+        ...(Object.keys(mergedEnv).length > 0 ? { env: mergedEnv } : {})
+      };
+    } else {
+      mergedServers[name] = config;
+    }
   }
 
   const mergedConfig = { mcpServers: mergedServers };

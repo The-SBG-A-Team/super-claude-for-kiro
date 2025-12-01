@@ -4,12 +4,19 @@ export async function install(options) {
   await installSuperClaude({
     force: options.force || false,
     mcp: options.mcp !== false,
-    default: options.default !== false
+    default: options.default !== false,
+    interactive: options.interactive,
+    minimal: options.minimal || false,
+    withMorph: options.withMorph || false,
+    morphApiKey: options.morphApiKey || null
   });
 }
 
 export async function update(options) {
-  await updateSuperClaude();
+  await updateSuperClaude({
+    withMorph: options.withMorph || false,
+    morphApiKey: options.morphApiKey || null
+  });
 }
 
 export async function uninstall(options) {

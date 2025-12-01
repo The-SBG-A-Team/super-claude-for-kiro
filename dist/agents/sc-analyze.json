@@ -10,7 +10,6 @@
   "allowedTools": [
     "*",
     "@context7",
-    "@morphllm-fast-apply",
     "@playwright",
     "@sequential-thinking",
     "@serena"

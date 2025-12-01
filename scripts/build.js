@@ -143,13 +143,12 @@ The user can reference any SuperClaude command using #sc-[command] syntax. When 
 - 'be token efficient': Reduced context, concise responses
 
 ## MCP Tools Available
-You have access to sequential-thinking, context7, playwright, serena, and morphllm-fast-apply MCP servers for enhanced capabilities.`,
+You have access to sequential-thinking, context7, playwright, and serena MCP servers for enhanced capabilities.`,
     "mcpServers": {},
     "tools": ["*"],
     "allowedTools": [
       "*",
       "@context7",
-      "@morphllm-fast-apply",
       "@playwright",
       "@sequential-thinking",
       "@serena"
@@ -187,7 +186,6 @@ For analysis, use #sc-analyze.`,
     "allowedTools": [
       "*",
       "@context7",
-      "@morphllm-fast-apply",
       "@playwright",
       "@sequential-thinking",
       "@serena"
@@ -224,7 +222,6 @@ For testing, use #sc-test.`,
     "allowedTools": [
       "*",
       "@context7",
-      "@morphllm-fast-apply",
       "@playwright",
       "@sequential-thinking",
       "@serena"
@@ -261,7 +258,6 @@ For troubleshooting, use #sc-troubleshoot.`,
     "allowedTools": [
       "*",
       "@context7",
-      "@morphllm-fast-apply",
       "@playwright",
       "@sequential-thinking",
       "@serena"
@@ -335,15 +331,6 @@ async function generateMcpTemplate() {
           "check_onboarding_performed", "onboarding", "think_about_collected_information",
           "think_about_task_adherence", "think_about_whether_you_are_done", "initial_instructions"
         ]
-      },
-      "morphllm-fast-apply": {
-        "type": "stdio",
-        "command": "npx",
-        "args": ["-y", "@morph-llm/morph-fast-apply"],
-        "env": {
-          "MORPH_API_KEY": "${MORPH_API_KEY}"
-        },
-        "autoApprove": ["edit_file"]
       }
     }
   };

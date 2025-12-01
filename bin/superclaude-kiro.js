@@ -17,11 +17,18 @@ program
   .option('-f, --force', 'Overwrite existing installation')
   .option('--no-mcp', 'Skip MCP server configuration')
   .option('--no-default', 'Do not set superclaude as default agent')
+  .option('-i, --interactive', 'Force interactive mode for MCP selection')
+  .option('--no-interactive', 'Skip interactive prompts (use defaults)')
+  .option('--minimal', 'Install only core MCP servers (no prompts)')
+  .option('--with-morph', 'Include MorphLLM Fast Apply (prompts for API key)')
+  .option('--morph-api-key <key>', 'Include MorphLLM with this API key (for CI/CD)')
   .action(install);
 
 program
   .command('update')
   .description('Update SuperClaude to latest version')
+  .option('--with-morph', 'Add MorphLLM during update (prompts for API key)')
+  .option('--morph-api-key <key>', 'Add MorphLLM with this API key during update')
   .action(update);
 
 program
