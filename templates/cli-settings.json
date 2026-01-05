@@ -1,6 +1,5 @@
 {
   "chat.defaultAgent": "superclaude",
-  "chat.model": "claude-sonnet-4.5",
   "chat.enableThinking": true,
   "chat.enableTodoList": true,
   "chat.enableDelegate": true

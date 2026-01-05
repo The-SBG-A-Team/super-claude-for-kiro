@@ -442,7 +442,6 @@ async function setDefaultAgent() {
   }
 
   settings['chat.defaultAgent'] = 'superclaude';
-  settings['chat.model'] = settings['chat.model'] || 'claude-sonnet-4.5';
   settings['chat.enableThinking'] = settings['chat.enableThinking'] !== false;
   settings['chat.enableTodoList'] = settings['chat.enableTodoList'] !== false;
   settings['chat.enableDelegate'] = settings['chat.enableDelegate'] !== false;

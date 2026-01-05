@@ -135,15 +135,38 @@ The user can reference any SuperClaude command using #sc-[command] syntax. When 
 - #sc-workflow: Workflow generation
 - #sc-help: Show all commands and flags
 
-## Behavioral Modes (use as natural language)
-- 'brainstorm mode': Collaborative discovery mindset, ask probing questions
-- 'think deeply' or 'analyze thoroughly': Deeper structured analysis
-- 'delegate this': Break into sub-tasks
-- 'safe mode': Maximum validation before execution
-- 'be token efficient': Reduced context, concise responses
+## CRITICAL: FLAG PARSING - YOU MUST INTERPRET THESE FLAGS
 
-## MCP Tools Available
-You have access to sequential-thinking, context7, playwright, and serena MCP servers for enhanced capabilities.`,
+When user includes ANY of these flags, you MUST activate the corresponding MCP tools:
+
+### MCP Server Flags (ACTIVATE IMMEDIATELY when seen)
+- \`--seq\` or \`--sequential\`: IMMEDIATELY call mcp__sequential-thinking__sequentialthinking for EVERY reasoning step
+- \`--serena\`: USE mcp__serena__* tools for all code operations (find_symbol, get_symbols_overview, etc.)
+- \`--c7\` or \`--context7\`: USE mcp__context7__* tools for documentation lookup
+- \`--play\` or \`--playwright\`: USE mcp__playwright__* tools for browser automation
+- \`--all-mcp\`: Enable ALL MCP servers for the task
+
+### Analysis Depth Flags (CRITICAL)
+- \`--think\`: Use sequential-thinking with ~5-8 thought steps
+- \`--think-hard\`: Use sequential-thinking with ~10-15 thought steps + context7
+- \`--ultrathink\`: MAXIMUM DEPTH - Use sequential-thinking with 15-25+ thought steps, enable ALL MCP servers, analyze exhaustively
+
+### Output Flags
+- \`--uc\` or \`--ultracompressed\`: Respond with minimal tokens, use symbols/abbreviations
+- \`--token-efficient\`: Concise responses, reduced context
+
+### Execution Examples
+User: "#sc-analyze --seq --serena src/"
+→ You MUST: 1) Call sequential-thinking for each analysis step 2) Use serena tools for code inspection
+
+User: "#sc-implement --ultrathink --c7 add auth"
+→ You MUST: 1) Use 15-25+ sequential thinking steps 2) Look up auth docs via context7 3) Use serena for code changes
+
+## Behavioral Modes (natural language triggers)
+- 'brainstorm mode': Collaborative discovery, ask probing questions
+- 'think deeply/hard': Activate --think-hard behavior
+- 'delegate this': Break into sub-tasks
+- 'safe mode': Maximum validation before execution`,
     "mcpServers": {},
     "tools": ["*"],
     "allowedTools": [
@@ -159,8 +182,7 @@ You have access to sequential-thinking, context7, playwright, and serena MCP ser
       "shell": { "autoAllow": true },
       "write": { "autoAllow": true }
     },
-    "useLegacyMcpJson": true,
-    "model": "claude-sonnet-4.5"
+    "useLegacyMcpJson": true
   };
 
   // PM Agent
@@ -180,7 +202,13 @@ When the user needs project management help, reference #sc-pm for full workflow 
 
 For task breakdown, use #sc-task or #sc-spawn.
 For implementation delegation, use #sc-implement.
-For analysis, use #sc-analyze.`,
+For analysis, use #sc-analyze.
+
+## FLAG PARSING (CRITICAL)
+- \`--seq\`: Use mcp__sequential-thinking__sequentialthinking for ALL steps
+- \`--serena\`: Use mcp__serena__* tools for code operations
+- \`--ultrathink\`: 15-25+ sequential thinking steps, enable ALL MCP servers
+- \`--think-hard\`: 10-15 sequential thinking steps + context7`,
     "mcpServers": {},
     "tools": ["*"],
     "allowedTools": [
@@ -196,8 +224,7 @@ For analysis, use #sc-analyze.`,
       "shell": { "autoAllow": true },
       "write": { "autoAllow": true }
     },
-    "useLegacyMcpJson": true,
-    "model": "claude-sonnet-4.5"
+    "useLegacyMcpJson": true
   };
 
   // Implementation Agent
@@ -216,7 +243,13 @@ For analysis, use #sc-analyze.`,
 
 Reference #sc-implement for full workflow.
 For design decisions, use #sc-design.
-For testing, use #sc-test.`,
+For testing, use #sc-test.
+
+## FLAG PARSING (CRITICAL)
+- \`--seq\`: Use mcp__sequential-thinking__sequentialthinking for ALL steps
+- \`--serena\`: Use mcp__serena__* tools for code operations
+- \`--c7\`: Use mcp__context7__* for documentation lookup
+- \`--ultrathink\`: 15-25+ sequential thinking steps, enable ALL MCP servers`,
     "mcpServers": {},
     "tools": ["*"],
     "allowedTools": [
@@ -232,8 +265,7 @@ For testing, use #sc-test.`,
       "shell": { "autoAllow": true },
       "write": { "autoAllow": true }
     },
-    "useLegacyMcpJson": true,
-    "model": "claude-sonnet-4.5"
+    "useLegacyMcpJson": true
   };
 
   // Analysis Agent
@@ -252,7 +284,13 @@ Provide actionable insights with specific recommendations and code locations.
 
 Reference #sc-analyze for full workflow.
 For improvements, use #sc-improve.
-For troubleshooting, use #sc-troubleshoot.`,
+For troubleshooting, use #sc-troubleshoot.
+
+## FLAG PARSING (CRITICAL)
+- \`--seq\`: ALWAYS use mcp__sequential-thinking__sequentialthinking for EVERY analysis step
+- \`--serena\`: Use mcp__serena__* tools (find_symbol, get_symbols_overview) for code inspection
+- \`--ultrathink\`: 15-25+ sequential thinking steps, exhaustive analysis with ALL MCP servers
+- \`--think-hard\`: 10-15 sequential thinking steps + context7`,
     "mcpServers": {},
     "tools": ["*"],
     "allowedTools": [
@@ -268,8 +306,7 @@ For troubleshooting, use #sc-troubleshoot.`,
       "shell": { "autoAllow": true },
       "write": { "autoAllow": true }
     },
-    "useLegacyMcpJson": true,
-    "model": "claude-sonnet-4.5"
+    "useLegacyMcpJson": true
   };
 
   await fs.writeJson(path.join(DIST_DIR, 'agents', 'superclaude.json'), superclaudeAgent, { spaces: 2 });
