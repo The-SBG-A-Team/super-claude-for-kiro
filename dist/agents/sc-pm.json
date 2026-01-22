@@ -26,5 +26,6 @@
       "autoAllow": true
     }
   },
-  "useLegacyMcpJson": true
+  "useLegacyMcpJson": true,
+  "model": "claude-opus-4-5"
 }
