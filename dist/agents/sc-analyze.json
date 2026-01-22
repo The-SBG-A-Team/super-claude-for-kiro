@@ -14,7 +14,8 @@
     "@playwright",
     "@sequential-thinking",
     "@serena",
-    "@morphllm-fast-apply/edit_file"
+    "@morphllm-fast-apply/edit_file",
+    "@morphllm-fast-apply/warpgrep_codebase_search"
   ],
   "resources": [],
   "hooks": {},

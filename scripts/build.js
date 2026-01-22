@@ -176,7 +176,8 @@ User: "#sc-implement --ultrathink --c7 add auth"
       "@playwright",
       "@sequential-thinking",
       "@serena",
-      "@morphllm-fast-apply/edit_file"
+      "@morphllm-fast-apply/edit_file",
+      "@morphllm-fast-apply/warpgrep_codebase_search"
     ],
     "resources": [],
     "hooks": {},
@@ -221,7 +222,8 @@ For analysis, use #sc-analyze.
       "@playwright",
       "@sequential-thinking",
       "@serena",
-      "@morphllm-fast-apply/edit_file"
+      "@morphllm-fast-apply/edit_file",
+      "@morphllm-fast-apply/warpgrep_codebase_search"
     ],
     "resources": [],
     "hooks": {},
@@ -265,7 +267,8 @@ For testing, use #sc-test.
       "@playwright",
       "@sequential-thinking",
       "@serena",
-      "@morphllm-fast-apply/edit_file"
+      "@morphllm-fast-apply/edit_file",
+      "@morphllm-fast-apply/warpgrep_codebase_search"
     ],
     "resources": [],
     "hooks": {},
@@ -309,7 +312,8 @@ For troubleshooting, use #sc-troubleshoot.
       "@playwright",
       "@sequential-thinking",
       "@serena",
-      "@morphllm-fast-apply/edit_file"
+      "@morphllm-fast-apply/edit_file",
+      "@morphllm-fast-apply/warpgrep_codebase_search"
     ],
     "resources": [],
     "hooks": {},
