@@ -138,7 +138,7 @@ npx superclaude-kiro install --morph-api-key "your-api-key"
 
 All agents are configured with:
 - `"tools": ["*"]` - Access to all tools
-- `"allowedTools": ["*", "@context7", "@playwright", "@sequential-thinking", "@serena"]` - All built-in and MCP tools pre-approved
+- `"allowedTools": ["*", "use_subagent", "@context7", "@playwright", "@sequential-thinking", "@serena", "@morphllm-fast-apply/edit_file"]` - All built-in tools, subagents, and MCP tools pre-approved
 - `"toolsSettings"` - Shell and write operations auto-allowed
 - `"useLegacyMcpJson": true` - Uses global MCP servers
 

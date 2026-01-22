@@ -171,10 +171,12 @@ User: "#sc-implement --ultrathink --c7 add auth"
     "tools": ["*"],
     "allowedTools": [
       "*",
+      "use_subagent",
       "@context7",
       "@playwright",
       "@sequential-thinking",
-      "@serena"
+      "@serena",
+      "@morphllm-fast-apply/edit_file"
     ],
     "resources": [],
     "hooks": {},
@@ -213,10 +215,12 @@ For analysis, use #sc-analyze.
     "tools": ["*"],
     "allowedTools": [
       "*",
+      "use_subagent",
       "@context7",
       "@playwright",
       "@sequential-thinking",
-      "@serena"
+      "@serena",
+      "@morphllm-fast-apply/edit_file"
     ],
     "resources": [],
     "hooks": {},
@@ -254,10 +258,12 @@ For testing, use #sc-test.
     "tools": ["*"],
     "allowedTools": [
       "*",
+      "use_subagent",
       "@context7",
       "@playwright",
       "@sequential-thinking",
-      "@serena"
+      "@serena",
+      "@morphllm-fast-apply/edit_file"
     ],
     "resources": [],
     "hooks": {},
@@ -295,10 +301,12 @@ For troubleshooting, use #sc-troubleshoot.
     "tools": ["*"],
     "allowedTools": [
       "*",
+      "use_subagent",
       "@context7",
       "@playwright",
       "@sequential-thinking",
-      "@serena"
+      "@serena",
+      "@morphllm-fast-apply/edit_file"
     ],
     "resources": [],
     "hooks": {},

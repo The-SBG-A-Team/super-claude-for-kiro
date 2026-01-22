@@ -9,10 +9,12 @@
   ],
   "allowedTools": [
     "*",
+    "use_subagent",
     "@context7",
     "@playwright",
     "@sequential-thinking",
-    "@serena"
+    "@serena",
+    "@morphllm-fast-apply/edit_file"
   ],
   "resources": [],
   "hooks": {},
