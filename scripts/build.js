@@ -185,7 +185,7 @@ User: "#sc-implement --ultrathink --c7 add auth"
       "write": { "autoAllow": true }
     },
     "useLegacyMcpJson": true,
-    "model": "claude-opus-4-5"
+    "model": "claude-opus-4.5"
   };
 
   // PM Agent
@@ -230,7 +230,7 @@ For analysis, use #sc-analyze.
       "write": { "autoAllow": true }
     },
     "useLegacyMcpJson": true,
-    "model": "claude-opus-4-5"
+    "model": "claude-opus-4.5"
   };
 
   // Implementation Agent
@@ -274,7 +274,7 @@ For testing, use #sc-test.
       "write": { "autoAllow": true }
     },
     "useLegacyMcpJson": true,
-    "model": "claude-opus-4-5"
+    "model": "claude-opus-4.5"
   };
 
   // Analysis Agent
@@ -318,7 +318,7 @@ For troubleshooting, use #sc-troubleshoot.
       "write": { "autoAllow": true }
     },
     "useLegacyMcpJson": true,
-    "model": "claude-opus-4-5"
+    "model": "claude-opus-4.5"
   };
 
   await fs.writeJson(path.join(DIST_DIR, 'agents', 'superclaude.json'), superclaudeAgent, { spaces: 2 });

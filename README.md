@@ -141,7 +141,7 @@ All agents are configured with:
 - `"allowedTools": ["*", "use_subagent", "@context7", "@playwright", "@sequential-thinking", "@serena", "@morphllm-fast-apply/edit_file"]` - All built-in tools, subagents, and MCP tools pre-approved
 - `"toolsSettings"` - Shell and write operations auto-allowed
 - `"useLegacyMcpJson": true` - Uses global MCP servers
-- `"model": "claude-opus-4-5"` - Uses Claude Opus 4.5 by default (subagents inherit this when spawned with superclaude agent)
+- `"model": "claude-opus-4.5"` - Uses Claude Opus 4.5 by default (subagents inherit this when spawned with superclaude agent)
 
 **Note**: No default model is set - Kiro CLI remembers your model choice.
 
